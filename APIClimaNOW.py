@@ -7,6 +7,9 @@ import requests
 import datetime as dt
 from PyQt5 import QtWidgets, QtGui
 
+CITIES = []
+CITY = ""
+
 # Definir Classe da janela:
 
 class JanelaApp(QtWidgets.QMainWindow):
@@ -17,20 +20,19 @@ class JanelaApp(QtWidgets.QMainWindow):
         self.CITIES = ["Rio de Janeiro", "São Paulo", "Navegantes"]
 
 
+# Criando um combo box:
     def init_ui(self):
-        # Create a combo box to select the city
         self.city_combo = QtWidgets.QComboBox(self)
         self.city_combo.addItems(self.CITIES)
         self.city_combo.move(50, 50)
-
-        # Create a display area for the weather information
+        
         self.display_area = QtWidgets.QTextEdit(self)
         self.display_area.setReadOnly(True)
         self.display_area.move(50, 100)
         self.display_area.resize(400, 300)
 
 
-        # Ligando o combo box a função display_clima
+        # Ligando o combo box a função display_clima:
         self.city_combo.activated.connect(self.display_clima)    
 
 
@@ -56,9 +58,11 @@ def Padrao_Kelvin(kelvin):
 def display_clima(self):
     BASE_URL =  "http://api.openweathermap.org/data/2.5/weather?"
     API_KEY = "d04ac5b90d03979302cf954cffa78825"
-    CITIES = ["Rio de janeiro", "São Paulo", "Navegantes"]
-
-    url = BASE_URL + "appid=" + API_KEY + "&q=" + CITY
+    CIDADES = ["Rio de janeiro", "São Paulo", "Navegantes"]
+    
+    
+    cidadesele = self.city_combo.currentText()
+    url = BASE_URL + "appid=" + API_KEY + "&q=" + cidadesele
     resposta = requests.get(url).json()
     temp_kelvin = resposta['main']['temp']
     temp_celsius, temp_fahrenheit = Padrao_Kelvin(temp_kelvin)
@@ -72,7 +76,7 @@ def display_clima(self):
 
 # Mostrando as informações ao Usuário:
     self.display_area.clear()
-    self.display_area.append(f'Temperatura em {city}: {temp_celsius:.2f}C ou {temp_fahrenheit:.2f}F.')
+    self.display_area.append(f'Temperatura em {CITY}: {temp_celsius:.2f}C ou {temp_fahrenheit:.2f}F.')
     self.display_area.setText(f'Temperatura em {CITY}: {temp_celsius:.2f}C ou {temp_fahrenheit:.2f}F.\n'
                         f'Sensação térmica em {CITY} é de: {sensacao_celsius:.2f}C ou {sensacao_fahrenheit:.2f}F.\n'
                         f'Umidade relativa do ar em {CITY}: {umidade}%.\n'
@@ -82,12 +86,3 @@ def display_clima(self):
                         f'O sol se põe em {CITY}: {por_do_sol} hora local.')
 
 
-# Mostrando as informações ao Usuário:
-
-'''print(f'Temperatura em {CITY}: {temp_celsius:.2f}C ou {temp_fahrenheit:.2f}F.')
-print(f'Sensação térmica em {CITY} é de: {sensacao_celsius:.2f}C ou {sensacao_fahrenheit:.2f}F.')
-print(f'Umidade relativa do ar em {CITY}: {umidade}%.')
-print(f'Velocidade do vento em {CITY}: {vento_velo}km/h.')
-print(f'Informações gerais em {CITY}: {descricao}.') 
-print(f'O sol nasce em {CITY}: {nascer_sol} hora local.')
-print(f'O sol se põe em {CITY}: {por_do_sol} hora local.')'''
